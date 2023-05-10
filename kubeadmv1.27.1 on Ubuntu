@@ -63,4 +63,10 @@ kubeadm init
 ##################################################################################################
 Install Pod Network addon:
 
-curl https://raw.githubusercontent.com/projectcalico/calico/v3.25.1/manifests/calico.yaml -O
+curl https://raw.githubusercontent.com/projectcalico/calico/v3.25.1/manifests/  -O
+kubectl apply -f calico.yaml
+
+#########
+#By default, your cluster will not schedule Pods on the control plane nodes for security reasons. If you want to be able to schedule Pods on the control plane nodes, for example for a single machine Kubernetes cluster, run:
+kubectl taint nodes --all node-role.kubernetes.io/control-plane-
+
