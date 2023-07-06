@@ -74,6 +74,7 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 ##################################################################################################
 Install Pod Network addon:
+#refer :- https://docs.tigera.io/calico/latest/getting-started/kubernetes/self-managed-onprem/onpremises
 
 curl https://raw.githubusercontent.com/projectcalico/calico/v3.25.1/manifests/  -O
 kubectl apply -f calico.yaml
