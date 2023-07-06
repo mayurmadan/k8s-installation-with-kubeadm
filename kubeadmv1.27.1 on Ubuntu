@@ -58,7 +58,13 @@ sudo apt update
 sudo apt install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
 
+##for master node only
 kubeadm init 
+or 
+sudo kubeadm init --pod-network-cidr 192.168.0.0/16
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 ##################################################################################################
 Install Pod Network addon:
@@ -67,6 +73,11 @@ curl https://raw.githubusercontent.com/projectcalico/calico/v3.25.1/manifests/  
 kubectl apply -f calico.yaml
 
 #########
-#By default, your cluster will not schedule Pods on the control plane nodes for security reasons. If you want to be able to schedule Pods on the control plane nodes, for example for a single machine Kubernetes cluster, run:
+get the token for node
+
+kubeadm token create --print-join-command
+
+
+####By default, your cluster will not schedule Pods on the control plane nodes for security reasons. If you want to be able to schedule Pods on the control plane nodes, for example for a single machine Kubernetes cluster, run:
 kubectl taint nodes --all node-role.kubernetes.io/control-plane-
 
