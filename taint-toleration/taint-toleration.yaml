@@ -1,0 +1,41 @@
+#to add
+#kubectl taint nodes node1 prefer=important:NoSchedule
+#
+#to remove
+#kubectl taint nodes node1 prefer=important:NoSchedule-
+#https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/#:~:text=Taints%20are%20the%20opposite%20%2D%2D,as%20part%20of%20its%20function.
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apache-deployment
+  namespace: default
+  labels:
+    app: apache
+spec:
+  replicas: 6
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 50%
+      maxUnavailable: 50%
+  selector:
+    matchLabels:
+      app: apache
+  template:
+    metadata:
+      labels:
+        app: apache
+    spec:
+      containers:
+      - name: apache-cont
+        image: httpd
+        ports:
+        - containerPort: 80
+      tolerations:
+      - key: "prefer"
+        operator: "Equal"
+        value: "important"
+        effect: "NoSchedule"
+
+---          

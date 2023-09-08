@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: config-app
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: configapp
+  template:
+    metadata:
+      labels:
+        app: configapp
+    spec:
+      containers:
+      - name: sales-app-container
+        #image: mayurmadan/test-k8s:latest
+        image: alpine
+        command: ["sleep", "3600"]
+        env:
+         - name: PLAYER_INITIAL_LIVES #we can use any name
+           valueFrom:
+             configMapKeyRef:
+               name: game-demo         # The ConfigMap name.
+               key: player_initial_lives     # The key to fetch mention in configmap name as test-config
+         - name: UI_PROPERTIES_FILE_NAME
+           valueFrom:
+             configMapKeyRef:
+               name: game-demo
+               key: ui_properties_file_name        
+        ports:
+        - containerPort: 80
+        resources:         
+          limits:          
+            cpu: 50m        
+            memory: "55Mi"
+          requests:
+            cpu: 50m
+            memory: "55Mi"
+    

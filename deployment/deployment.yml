@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sales-app
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: salesapp
+  template:
+    metadata:
+      labels:
+        app: salesapp
+    spec:
+      containers:
+      - name: sales-app-container
+        image: mayurmadan/test-k8s:latest
+        ports:
+        - containerPort: 80
+        resources:         
+          limits:          
+            cpu: 50m        
+            memory: "55Mi"
+          requests:
+            cpu: 50m
+            memory: "55Mi"
+    

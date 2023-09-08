@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx-cont
+        image: nginx:1.9.1
+        ports:
+        - containerPort: 80
+        volumeMounts: #mount the below volume [2]
+          - name: config-prd-volume 
+            mountPath: /usr/src/app/config.xml
+            subPath: config.xml
+      volumes:
+      - name: config-prd-volume #create volme as configmap [1]
+        configMap:
+          name: config-prd

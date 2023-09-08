@@ -1,0 +1,34 @@
+#https://kubernetes.io/docs/tasks/configure-pod-container/assign-pods-nodes/
+#kubectl label nodes <your-node-name> <label>
+#kubectl label nodes node1 disktype=ssd
+#
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apache-deployment
+  namespace: default
+  labels:
+    app: apache
+spec:
+  replicas: 6
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 50%
+      maxUnavailable: 50%
+  selector:
+    matchLabels:
+      app: apache
+  template:
+    metadata:
+      labels:
+        app: apache
+    spec:
+      containers:
+      - name: apache-cont
+        image: httpd
+        ports:
+        - containerPort: 80
+      nodeSelector:
+        disktype: master    
+---          
