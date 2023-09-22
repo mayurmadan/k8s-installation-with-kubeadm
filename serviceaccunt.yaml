@@ -57,5 +57,18 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 ---
 ###################################################################################################
+#option 1 (difficult but refer)
 #create token and create secret as volume 
 # $ kubectl create token dashboard-sa
+#then create secret for token and map it inside object manifest as volume
+
+
+#option2 (easy but deprecated)
+#craete the serviceaccount manually and and create the secret as below which will create the token and secret for token of service account
+apiVersion: v1
+kind: Secret
+metadata:
+  name: dashboard-sa-secret
+  annotations:
+    kubernetes.io/service-account.name: dashboard-sa
+type: kubernetes.io/service-account-token
