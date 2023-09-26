@@ -1,0 +1,17 @@
+#https://kubernetes.io/docs/tasks/configure-pod-container/configure-persistent-volume-storage/
+#https://kubernetes.io/docs/tasks/administer-cluster/change-pv-reclaim-policy/
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-log
+  labels:
+    type: local
+spec:
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: manual
+  capacity:
+    storage: 100Mi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/pv/log"
