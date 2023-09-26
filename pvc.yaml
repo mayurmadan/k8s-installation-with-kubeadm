@@ -4,9 +4,9 @@ kind: PersistentVolumeClaim
 metadata:
   name: claim-log-1
 spec:
-  storageClassName: manual
+  storageClassName: testvolume
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
       storage: 50Mi
