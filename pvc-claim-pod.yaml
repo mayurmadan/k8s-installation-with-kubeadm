@@ -1,0 +1,17 @@
+#https://kubernetes.io/docs/tasks/configure-pod-container/configure-persistent-volume-storage/
+apiVersion: v1
+kind: Pod
+metadata:
+  name: webapp
+spec:
+  containers:
+  - image: kodekloud/event-simulator
+    name: test-container
+    volumeMounts:
+    - mountPath: /log
+      name: PersistentVolumeClaim=claim-log-1
+  volumes:
+  - name:  PersistentVolumeClaim=claim-log-1 #this is custom volume name use in pod sepc
+    #PVC name here 
+    persistentVolumeClaim:
+      claimName: claim-log-1
