@@ -25,13 +25,25 @@ sudo sysctl --system
 # Install required packages
 sudo apt install -y curl gnupg2 software-properties-common apt-transport-https ca-certificates
 
-# Add Docker's official GPG key
-sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo tee /etc/apt/trusted.gpg.d/docker.gpg > /dev/null
+########################################################################################################
+#Install containerd run time
+sudo apt install -y curl gnupg2 software-properties-common apt-transport-https ca-certificates
+####old keys
+#sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmour -o /etc/apt/trusted.gpg.d/docker.gpg
+#sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 
-# Set up Docker repository
-sudo add-apt-repository -y "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+###new keys
+# Add Docker's official GPG key [from docker offical docs]
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+# Add the repository to Apt sources:
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 sudo apt update
-
+sudo apt install -y containerd.io
 # Install containerd
 sudo apt install -y containerd.io
 
