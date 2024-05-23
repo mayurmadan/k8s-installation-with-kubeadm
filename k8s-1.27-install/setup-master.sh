@@ -77,3 +77,52 @@ kubeadm token create --print-join-command
 
 # Allow scheduling pods on the master node (optional)
 kubectl taint nodes --all node-role.kubernetes.io/control-plane-
+
+
+###################3
+#k8s init script to start kubectl at every restart
+##scirpt to call at each startup
+K8S_INIT_SCRIPT="/usr/local/bin/init_k8s.sh"
+cat <<EOL > $K8S_INIT_SCRIPT
+#!/bin/bash
+# Disable swap
+sudo swapoff -a
+sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+# Restart kubelet service
+sudo systemctl stop kubelet.service
+sudo systemctl start kubelet.service
+EOL
+
+##service file for k8s init for automatic restart service
+init_k8s="[Unit]
+Description=Initialize Kubernetes Setup
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/init_k8s.sh
+RemainAfterExit=true
+
+[Install]
+WantedBy=multi-user.target"
+
+#create file for systemd
+cat >/lib/systemd/system/init_k8s.service <<-EOF
+$init_k8s
+EOF
+
+#start exeution
+sudo chmod 0777 $K8S_INIT_SCRIPT
+sleep 0.5
+sudo systemctl daemon-reload
+sleep 0.5
+sudo systemctl enable init_k8s.service
+sleep 0.5
+sudo systemctl start init_k8s.service
+sleep 0.5
+
+##print token again
+# Generate the join command for worker nodes
+echo "Use the following command to join worker nodes to the cluster:"
+kubeadm token create --print-join-command
+
