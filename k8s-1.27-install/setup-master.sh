@@ -29,22 +29,10 @@ sudo apt install -y curl gnupg2 software-properties-common apt-transport-https c
 #Install containerd run time
 sudo apt install -y curl gnupg2 software-properties-common apt-transport-https ca-certificates
 ####old keys
-#sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmour -o /etc/apt/trusted.gpg.d/docker.gpg
-#sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --yes --dearmour -o /etc/apt/trusted.gpg.d/docker.gpg
+sudo add-apt-repository -y "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 
-###new keys
-# Add Docker's official GPG key [from docker offical docs]
-sudo install -m 0755 -d /etc/apt/keyrings
-sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-sudo chmod a+r /etc/apt/keyrings/docker.asc
-# Add the repository to Apt sources:
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
-  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 sudo apt update
-sudo apt install -y containerd.io
-# Install containerd
 sudo apt install -y containerd.io
 
 # Configure containerd to use systemd as the cgroup driver
@@ -71,7 +59,7 @@ sudo apt update
 sudo apt install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
 
-# Initialize Kubernetes master node
+##Initialize Kubernetes master node
 sudo kubeadm init --pod-network-cidr 192.168.0.0/16
 
 # Set up kubeconfig for the regular user
@@ -90,6 +78,11 @@ kubeadm token create --print-join-command
 # Allow scheduling pods on the master node (optional)
 kubectl taint nodes --all node-role.kubernetes.io/control-plane-
 
+#setup autocomplte for k8s
+apt-get install bash-completion -y
+source /usr/share/bash-completion/bash_completion
+echo 'source <(kubectl completion bash)' >>~/.bashrc
+source ~/.bashrc
 
 ###################3
 #k8s init script to start kubectl at every restart
