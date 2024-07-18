@@ -1,3 +1,4 @@
+#before start script make sure you have 2 cpu and 2 gb ram machine for master/control plane
 #!/bin/bash
 set -x
 # Update and upgrade the system
